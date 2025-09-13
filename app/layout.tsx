@@ -8,7 +8,7 @@ import { Suspense } from "react"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "RoboPilot - Robot Controller",
+  title: "Aura-67 - Robot Controller",
   description: "Web-based robot controller with live video feed and chat commands",
   generator: "v0.app",
 }

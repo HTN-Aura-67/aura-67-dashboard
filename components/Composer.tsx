@@ -55,7 +55,7 @@ export function Composer({ onSend, disabled }: ComposerProps) {
       <div className="flex-1">
         <Textarea
           ref={textareaRef}
-          placeholder="Type a command for the robot... (Enter to send, Shift+Enter for new line)"
+          placeholder="Type a command for Aura-67... (Enter to send, Shift+Enter for new line)"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}

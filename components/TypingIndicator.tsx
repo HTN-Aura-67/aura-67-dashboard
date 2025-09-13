@@ -6,7 +6,7 @@ export function TypingIndicator() {
         <div className="w-2 h-2 bg-muted-foreground/60 rounded-full animate-bounce [animation-delay:-0.15s]" />
         <div className="w-2 h-2 bg-muted-foreground/60 rounded-full animate-bounce" />
       </div>
-      <span className="text-xs text-muted-foreground ml-2">Robot is thinking...</span>
+      <span className="text-xs text-muted-foreground ml-2">Aura-67 is thinking...</span>
     </div>
   )
 }

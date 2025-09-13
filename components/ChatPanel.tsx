@@ -22,7 +22,7 @@ export function ChatPanel() {
       const systemMessage: ChatMessage = {
         id: "system-1",
         role: "robot",
-        text: "This chat sends instructions to the robot. Type natural language like 'go towards the apple'.",
+        text: "This chat sends instructions to Aura-67. Type natural language like 'go towards the apple'.",
         timestamp: Date.now(),
       }
       setMessages([systemMessage])
@@ -73,7 +73,7 @@ export function ChatPanel() {
     const systemMessage: ChatMessage = {
       id: "system-1",
       role: "robot",
-      text: "This chat sends instructions to the robot. Type natural language like 'go towards the apple'.",
+      text: "This chat sends instructions to Aura-67. Type natural language like 'go towards the apple'.",
       timestamp: Date.now(),
     }
     setMessages([systemMessage])
@@ -85,7 +85,14 @@ export function ChatPanel() {
     <Card className="h-full flex flex-col rounded-2xl shadow-sm bg-card text-card-foreground">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-foreground">Robot Commands</h2>
+          <div className="flex items-center gap-2">
+            <img 
+              src="/robot-svgrepo-com.svg" 
+              alt="Aura-67 Robot" 
+              className="w-6 h-6"
+            />
+            <h2 className="text-lg font-semibold text-foreground">Aura-67 Commands</h2>
+          </div>
           <Button variant="ghost" size="sm" onClick={clearChat} className="text-foreground hover:text-foreground">
             <Trash2 className="w-4 h-4 mr-2" />
             Clear Chat

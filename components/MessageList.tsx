@@ -40,9 +40,13 @@ export function MessageList({ messages, isTyping }: MessageListProps) {
             >
               <div className="flex items-start gap-2">
                 {message.role === "robot" && (
-                  <Badge variant="secondary" className="text-xs shrink-0 mt-0.5">
-                    Robot
-                  </Badge>
+                  <div className="shrink-0 mt-0.5">
+                    <img 
+                      src="/robot-svgrepo-com.svg" 
+                      alt="Aura-67 Robot" 
+                      className="w-5 h-5"
+                    />
+                  </div>
                 )}
                 <div className="flex-1">
                   <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.text}</p>
@@ -63,9 +67,13 @@ export function MessageList({ messages, isTyping }: MessageListProps) {
           <div className="flex justify-start">
             <div className="max-w-[80%] rounded-2xl px-4 py-3 bg-muted mr-4">
               <div className="flex items-start gap-2">
-                <Badge variant="secondary" className="text-xs shrink-0 mt-0.5">
-                  Robot
-                </Badge>
+                <div className="shrink-0 mt-0.5">
+                  <img 
+                    src="/robot-svgrepo-com.svg" 
+                    alt="Aura-67 Robot" 
+                    className="w-5 h-5"
+                  />
+                </div>
                 <TypingIndicator />
               </div>
             </div>

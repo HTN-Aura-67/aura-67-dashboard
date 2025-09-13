@@ -164,7 +164,7 @@ export function VideoPanel({ onStatusChange, onUrlChange }: VideoPanelProps) {
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = url
-      a.download = `robopilot-snapshot-${Date.now()}.png`
+      a.download = `aura-67-snapshot-${Date.now()}.png`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
@@ -272,7 +272,7 @@ export function VideoPanel({ onStatusChange, onUrlChange }: VideoPanelProps) {
               </div>
               <h3 className="text-lg font-medium text-white mb-2">No Stream Connected</h3>
               <p className="text-gray-400 mb-4 max-w-md">
-                Enter an HLS stream URL above and click Connect to start viewing the robot's camera feed.
+                Enter an HLS stream URL above and click Connect to start viewing Aura-67's camera feed.
               </p>
               <p className="text-sm text-gray-500">Demo stream is pre-loaded for testing</p>
             </div>

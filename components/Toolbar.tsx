@@ -38,7 +38,12 @@ export function Toolbar({ connectionStatus = "disconnected", streamUrl }: Toolba
     <header className="h-16 border-b bg-card px-4 flex items-center justify-between">
       {/* Left: Product name */}
       <div className="flex items-center gap-3">
-        <h1 className="text-xl font-semibold">RoboPilot</h1>
+        <img 
+          src="/robot-svgrepo-com.svg" 
+          alt="Aura-67 Robot" 
+          className="w-8 h-8"
+        />
+        <h1 className="text-xl font-semibold">Aura-67</h1>
       </div>
 
       {/* Center: Connection summary (hidden on small screens) */}
@@ -72,7 +77,7 @@ export function Toolbar({ connectionStatus = "disconnected", streamUrl }: Toolba
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>RoboPilot Help</DialogTitle>
+              <DialogTitle>Aura-67 Help</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 text-sm">
               <div>

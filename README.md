@@ -1,4 +1,4 @@
-# RoboPilot - Robot Controller Web UI
+# Aura-67 - Robot Controller Web UI
 
 A modern web-based robot controller interface featuring live video streaming and natural language command input.
 
@@ -13,9 +13,9 @@ A modern web-based robot controller interface featuring live video streaming and
 
 ### Chat Panel
 - **Natural Language Commands**: Send instructions using plain English
-- **Mock Robot Responses**: Intelligent keyword-based responses
+- **Mock Aura-67 Responses**: Intelligent keyword-based responses
 - **Quick Commands**: Pre-defined action buttons for common tasks
-- **Typing Indicators**: Visual feedback when robot is "thinking"
+- **Typing Indicators**: Visual feedback when Aura-67 is "thinking"
 - **Message History**: Persistent chat history with timestamps
 
 ### Technical Features
@@ -53,7 +53,7 @@ The app comes pre-configured with a test HLS stream: `https://test-streams.mux.d
 3. Use the control buttons for fullscreen, snapshots, and audio
 4. Replace with your own HLS stream URL as needed
 
-### Robot Commands
+### Aura-67 Commands
 1. Type natural language instructions in the chat input
 2. Use quick command buttons for common actions
 3. Press Enter to send, Shift+Enter for new lines
@@ -93,17 +93,17 @@ components/
 
 lib/
 ├── storage.ts         # localStorage utilities
-├── mockBot.ts         # Mock robot response logic
+├── mockBot.ts         # Mock Aura-67 response logic
 └── hlsClient.ts       # HLS streaming utilities
 \`\`\`
 
 ## Customization
 
 ### Adding Real Backend
-To connect to a real robot backend:
+To connect to a real Aura-67 backend:
 
 1. Replace mock responses in `lib/mockBot.ts` with actual API calls
-2. Update video streaming to use your robot's camera feed
+2. Update video streaming to use Aura-67's camera feed
 3. Add authentication if required
 4. Implement real-time WebSocket communication for live updates
 
@@ -146,4 +146,4 @@ The app automatically saves:
 - Efficient re-rendering with React optimization patterns
 
 ## License
-Created with v0.app - Customize and deploy as needed for your robot control applications.
+Created with v0.app - Customize and deploy as needed for your Aura-67 control applications.

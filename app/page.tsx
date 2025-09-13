@@ -6,7 +6,7 @@ import { VideoPanel } from "@/components/VideoPanel"
 import { ChatPanel } from "@/components/ChatPanel"
 import { ThemeProvider } from "@/components/theme-provider"
 
-export default function RobotController() {
+export default function Aura67Controller() {
   const [connectionStatus, setConnectionStatus] = useState<"disconnected" | "connecting" | "live" | "error">(
     "disconnected",
   )

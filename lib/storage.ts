@@ -8,13 +8,13 @@ export interface ChatMessage {
 export const storage = {
   saveChat: (messages: ChatMessage[]) => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("robopilot-chat", JSON.stringify(messages))
+      localStorage.setItem("aura-67-chat", JSON.stringify(messages))
     }
   },
 
   loadChat: (): ChatMessage[] => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("robopilot-chat")
+      const saved = localStorage.getItem("aura-67-chat")
       return saved ? JSON.parse(saved) : []
     }
     return []
@@ -22,20 +22,20 @@ export const storage = {
 
   saveUrl: (url: string) => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("robopilot-stream-url", url)
+      localStorage.setItem("aura-67-stream-url", url)
     }
   },
 
   loadUrl: (): string => {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("robopilot-stream-url") || "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+      return localStorage.getItem("aura-67-stream-url") || "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
     }
     return "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
   },
 
   clearChat: () => {
     if (typeof window !== "undefined") {
-      localStorage.removeItem("robopilot-chat")
+      localStorage.removeItem("aura-67-chat")
     }
   },
 }
