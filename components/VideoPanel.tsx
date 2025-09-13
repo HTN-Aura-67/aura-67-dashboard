@@ -208,9 +208,14 @@ export function VideoPanel({ onStatusChange, onUrlChange }: VideoPanelProps) {
 
           <div className="flex gap-2">
             {status === "disconnected" || status === "error" ? (
-              <Button onClick={connect} disabled={!url.trim() || status === "connecting"}>
+              <Button onClick={connect} disabled={!url.trim()}>
                 <Play className="w-4 h-4 mr-2" />
                 Connect
+              </Button>
+            ) : status === "connecting" ? (
+              <Button disabled>
+                <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                Connecting...
               </Button>
             ) : (
               <Button onClick={disconnect} variant="outline">
