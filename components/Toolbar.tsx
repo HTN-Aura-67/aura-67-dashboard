@@ -2,15 +2,18 @@
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
-import { Moon, Sun, HelpCircle, ExternalLink } from "lucide-react"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Moon, Sun, HelpCircle, ExternalLink, MessageSquare, Gamepad2 } from "lucide-react"
 import { useTheme } from "next-themes"
 
 interface ToolbarProps {
   connectionStatus?: "disconnected" | "connecting" | "live" | "error"
   streamUrl?: string
+  mode?: "chat" | "manual"
+  onModeChange?: (mode: "chat" | "manual") => void
 }
 
-export function Toolbar({ connectionStatus = "disconnected", streamUrl }: ToolbarProps) {
+export function Toolbar({ connectionStatus = "disconnected", streamUrl, mode = "chat", onModeChange }: ToolbarProps) {
   const { theme, setTheme } = useTheme()
 
   const getStatusColor = (status: string) => {
@@ -46,13 +49,28 @@ export function Toolbar({ connectionStatus = "disconnected", streamUrl }: Toolba
         <h1 className="text-xl font-semibold">Aura-67</h1>
       </div>
 
-      {/* Center: Connection summary (hidden on small screens) */}
-      <div className="hidden md:flex items-center gap-2">
-        <Badge variant="outline" className="gap-2">
-          <div className={`w-2 h-2 rounded-full ${getStatusColor(connectionStatus)}`} />
-          {connectionStatus}
-        </Badge>
-        {streamUrl && <span className="text-sm text-muted-foreground">{getStreamBasename(streamUrl)}</span>}
+      {/* Center: Mode switcher and connection summary */}
+      <div className="flex items-center gap-4">
+        <Tabs value={mode} onValueChange={(value) => onModeChange?.(value as "chat" | "manual")}>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="chat" className="flex items-center gap-2">
+              <MessageSquare className="w-4 h-4" />
+              <span className="hidden sm:inline">Chat</span>
+            </TabsTrigger>
+            <TabsTrigger value="manual" className="flex items-center gap-2">
+              <Gamepad2 className="w-4 h-4" />
+              <span className="hidden sm:inline">Manual</span>
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+        
+        <div className="hidden md:flex items-center gap-2">
+          <Badge variant="outline" className="gap-2">
+            <div className={`w-2 h-2 rounded-full ${getStatusColor(connectionStatus)}`} />
+            {connectionStatus}
+          </Badge>
+          {streamUrl && <span className="text-sm text-muted-foreground">{getStreamBasename(streamUrl)}</span>}
+        </div>
       </div>
 
       {/* Right: Controls */}
@@ -89,12 +107,21 @@ export function Toolbar({ connectionStatus = "disconnected", streamUrl }: Toolba
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium mb-2">Chat Commands</h4>
+                <h4 className="font-medium mb-2">Chat Mode</h4>
                 <ul className="space-y-1 text-muted-foreground">
                   <li>• Type natural language instructions</li>
                   <li>• Use quick command chips for common actions</li>
                   <li>• Press Enter to send, Shift+Enter for new line</li>
                   <li>• Ctrl/Cmd+K to focus the input</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium mb-2">Manual Control Mode</h4>
+                <ul className="space-y-1 text-muted-foreground">
+                  <li>• Use arrow keys or WASD for movement</li>
+                  <li>• Q/E keys for rotation left/right</li>
+                  <li>• Click buttons or hold keys to move</li>
+                  <li>• Real-time direct robot control</li>
                 </ul>
               </div>
             </div>
