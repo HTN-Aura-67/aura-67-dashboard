@@ -1,149 +1,197 @@
-# Aura-67 - Robot Controller Web UI
+# Aura-67 Autonomous Robot Dashboard
 
-A modern web-based robot controller interface featuring live video streaming and natural language command input.
+A modern web-based control interface for the Aura-67 autonomous robot, featuring real-time video streaming, natural language command processing, and intelligent task execution.
 
-## Features
+## 🤖 About Aura-67
 
-### Video Panel
-- **HLS Streaming**: Supports HLS video streams with automatic fallback (native Safari support + hls.js)
-- **Stream Controls**: Connect/disconnect, fullscreen, snapshot capture, mute/unmute
-- **Status Indicators**: Real-time connection status with visual feedback
-- **Error Handling**: Comprehensive error states with retry functionality
-- **Latency Display**: Mock latency estimation for stream monitoring
+Aura-67 is an autonomous robot designed to understand and execute natural language commands in real-world environments. The robot can perform complex tasks such as object detection, navigation, and environmental interaction through advanced AI processing and computer vision.
 
-### Chat Panel
-- **Natural Language Commands**: Send instructions using plain English
-- **Mock Aura-67 Responses**: Intelligent keyword-based responses
+## 🎯 Dashboard Purpose
+
+This web application serves as the primary control interface for Aura-67, providing:
+
+- **Real-time Monitoring**: Live video feed from the robot's camera system
+- **Natural Language Control**: Send commands using plain English (e.g., "scan around and go to the apples around you")
+- **Manual Override**: Direct control capabilities when needed
+- **Task Visualization**: Monitor the robot's current state and processing status
+- **Command History**: Track all interactions and robot responses
+
+## ✨ Key Features
+
+### 🎥 Live Video Streaming
+- **Real-time Camera Feed**: HLS streaming from Aura-67's onboard cameras
+- **Fullscreen Support**: Immersive viewing experience
+- **Snapshot Capture**: Save images from the robot's perspective
+- **Audio Controls**: Mute/unmute robot audio feed
+- **Connection Status**: Visual indicators for stream health
+
+### 🧠 AI-Powered Command Processing
+- **Natural Language Understanding**: Process complex commands in plain English
+- **Context Awareness**: Robot understands spatial relationships and object references
+- **Task Planning**: Break down complex commands into executable steps
+- **Real-time Processing**: Immediate response to new commands
+- **Learning Capabilities**: Improve performance through interaction history
+
+### 💬 Interactive Chat Interface
+- **Command Input**: Type natural language instructions
 - **Quick Commands**: Pre-defined action buttons for common tasks
-- **Typing Indicators**: Visual feedback when Aura-67 is "thinking"
-- **Message History**: Persistent chat history with timestamps
+- **Typing Indicators**: Visual feedback when Aura-67 is processing
+- **Message History**: Persistent chat log with timestamps
+- **Error Handling**: Clear feedback for failed commands
 
-### Technical Features
-- **Responsive Design**: Optimized for both desktop and mobile devices
-- **Dark/Light Mode**: System-aware theme switching
-- **Local Storage**: Automatic persistence of chat history and stream URLs
-- **Accessibility**: Full keyboard navigation and screen reader support
-- **Real-time Updates**: Live status synchronization across components
+### 🎛️ Control Panel
+- **Connection Management**: Easy stream URL configuration
+- **Status Monitoring**: Real-time connection and processing status
+- **Theme Support**: Dark/light mode for different environments
+- **Responsive Design**: Works on desktop, tablet, and mobile devices
 
-## Getting Started
+## 🚀 Example Commands
+
+Aura-67 can understand and execute various types of commands:
+
+### Navigation Commands
+- "Move forward 5 meters"
+- "Turn left and scan the area"
+- "Go to the kitchen"
+- "Return to your starting position"
+
+### Object Detection & Interaction
+- "Find all apples in the room"
+- "Go to the nearest red object"
+- "Pick up the book on the table"
+- "Scan around and identify all furniture"
+
+### Environmental Tasks
+- "Clean up the living room"
+- "Check if all doors are closed"
+- "Monitor the area for 10 minutes"
+- "Take a photo of the current scene"
+
+### Complex Multi-step Tasks
+- "Scan around and go to the apples around you"
+- "Find the remote control and bring it to me"
+- "Check each room for any open windows"
+- "Navigate to the garden and take photos of the plants"
+
+## 🛠️ Technology Stack
+
+### Frontend
+- **Next.js 14**: React framework with App Router
+- **TypeScript**: Type-safe development
+- **Tailwind CSS**: Utility-first styling
+- **Radix UI**: Accessible component primitives
+- **HLS.js**: Video streaming client
+- **React Hook Form**: Form management
+
+### Video Streaming
+- **HLS (HTTP Live Streaming)**: Real-time video delivery
+- **WebRTC**: Low-latency communication (future enhancement)
+- **Hardware Acceleration**: Optimized video decoding
+
+### AI Integration
+- **Natural Language Processing**: Command understanding
+- **Computer Vision**: Object detection and recognition
+- **Task Planning**: Multi-step command execution
+- **Context Management**: Spatial and temporal awareness
+
+### Architecture
+- **Component-based**: Modular React components
+- **State Management**: Local state with React hooks
+- **Responsive Design**: Mobile-first approach
+- **Progressive Enhancement**: Works without JavaScript
+
+## 📁 Project Structure
+
+```
+aura-67-dashboard/
+├── app/                    # Next.js app directory
+│   ├── layout.tsx         # Root layout with metadata
+│   └── page.tsx           # Main dashboard page
+├── components/            # React components
+│   ├── ChatPanel.tsx      # Command interface
+│   ├── VideoPanel.tsx     # Video streaming
+│   ├── Toolbar.tsx        # Top navigation
+│   ├── MessageList.tsx    # Chat message display
+│   ├── Composer.tsx       # Command input
+│   ├── TypingIndicator.tsx # AI processing indicator
+│   └── ui/               # Reusable UI components
+├── lib/                  # Utility libraries
+│   ├── storage.ts        # Local storage management
+│   ├── mockBot.ts        # AI response simulation
+│   └── hlsClient.ts      # Video streaming utilities
+└── public/               # Static assets
+    └── robot-svgrepo-com.svg # Robot icon
+```
+
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ and pnpm (or npm/yarn)
+- Node.js 18+ 
+- npm or pnpm package manager
 
 ### Installation
+```bash
+# Clone the repository
+git clone <repository-url>
+cd aura-67-dashboard
 
-\`\`\`bash
 # Install dependencies
+npm install
+# or
 pnpm install
 
 # Start development server
+npm run dev
+# or
 pnpm dev
-\`\`\`
+```
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+### Configuration
+1. **Stream URL**: Update the default HLS stream URL in `lib/storage.ts`
+2. **Robot Backend**: Connect to Aura-67's control API
+3. **AI Processing**: Configure natural language processing endpoints
 
-### Default Stream
-The app comes pre-configured with a test HLS stream: `https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8`
+## 🔧 Development
 
-## Usage
+### Available Scripts
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
 
-### Video Streaming
-1. The default demo stream URL is pre-loaded for testing
-2. Click "Connect" to start streaming
-3. Use the control buttons for fullscreen, snapshots, and audio
-4. Replace with your own HLS stream URL as needed
+### Adding New Features
+1. **New Commands**: Add to `lib/mockBot.ts` response patterns
+2. **UI Components**: Create in `components/` directory
+3. **API Integration**: Add endpoints in `lib/` directory
 
-### Aura-67 Commands
-1. Type natural language instructions in the chat input
-2. Use quick command buttons for common actions
-3. Press Enter to send, Shift+Enter for new lines
-4. Use Ctrl/Cmd+K to quickly focus the input
+## 🔮 Future Enhancements
 
-### Example Commands
-- "Scan the area"
-- "Go towards the apple"
-- "Avoid obstacles"
-- "Return to base"
+### Planned Features
+- **Voice Commands**: Speech-to-text input
+- **3D Visualization**: Robot's spatial understanding
+- **Task Scheduling**: Automated routine execution
+- **Multi-robot Support**: Control multiple Aura-67 units
+- **Advanced Analytics**: Performance metrics and insights
 
-## Architecture
+### Technical Improvements
+- **WebRTC Integration**: Lower latency video streaming
+- **WebSocket Communication**: Real-time bidirectional data
+- **PWA Support**: Offline functionality
+- **Mobile App**: Native iOS/Android applications
 
-### Tech Stack
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS v4 + shadcn/ui components
-- **Video**: hls.js with native HLS fallback
-- **State**: React hooks with localStorage persistence
-- **TypeScript**: Full type safety throughout
+## 🤝 Contributing
 
-### File Structure
-\`\`\`
-app/
-├── layout.tsx          # Root layout with theme provider
-├── page.tsx           # Main application page
-└── globals.css        # Global styles and theme variables
+We welcome contributions to improve Aura-67's capabilities:
 
-components/
-├── VideoPanel.tsx     # Video streaming interface
-├── ChatPanel.tsx      # Chat command interface
-├── MessageList.tsx    # Chat message display
-├── Composer.tsx       # Message input component
-├── QuickCommands.tsx  # Quick action buttons
-├── StatusPill.tsx     # Connection status indicator
-├── TypingIndicator.tsx # Bot typing animation
-└── Toolbar.tsx        # Top navigation bar
+1. **Command Processing**: Enhance natural language understanding
+2. **UI/UX**: Improve user experience and accessibility
+3. **Performance**: Optimize video streaming and responsiveness
+4. **Documentation**: Help others understand and use the system
 
-lib/
-├── storage.ts         # localStorage utilities
-├── mockBot.ts         # Mock Aura-67 response logic
-└── hlsClient.ts       # HLS streaming utilities
-\`\`\`
+## 📄 License
 
-## Customization
+This project is part of the Aura-67 autonomous robot system. All rights reserved.
 
-### Adding Real Backend
-To connect to a real Aura-67 backend:
+---
 
-1. Replace mock responses in `lib/mockBot.ts` with actual API calls
-2. Update video streaming to use Aura-67's camera feed
-3. Add authentication if required
-4. Implement real-time WebSocket communication for live updates
-
-### Stream Sources
-The UI accepts any HLS-compatible stream URL. For other video formats:
-- **WebRTC**: Use a media server like mediamtx to convert to HLS
-- **RTMP/UDP**: Convert using FFmpeg or similar tools
-- **IP Cameras**: Most modern cameras support HLS output
-
-### Styling
-The app uses Tailwind CSS with a custom design system. Key customization points:
-- Theme colors in `app/globals.css`
-- Component variants in shadcn/ui components
-- Responsive breakpoints in component files
-
-## Browser Support
-- **Chrome/Edge**: Full support via hls.js
-- **Firefox**: Full support via hls.js  
-- **Safari**: Native HLS support (optimal performance)
-- **Mobile**: Responsive design with touch-friendly controls
-
-## Development Notes
-
-### Mock Responses
-The bot currently provides canned responses based on keywords:
-- "scan" → Area scanning response
-- "apple" → Navigation response  
-- "return"/"base" → Return to base response
-- Default → Generic acknowledgment
-
-### Local Storage
-The app automatically saves:
-- Chat message history
-- Last used stream URL
-- User preferences
-
-### Performance
-- HLS.js is loaded dynamically only when needed
-- Video elements use hardware acceleration when available
-- Efficient re-rendering with React optimization patterns
-
-## License
-Created with v0.app - Customize and deploy as needed for your Aura-67 control applications.
+**Aura-67 Dashboard** - Empowering autonomous robotics through intuitive human-robot interaction.
