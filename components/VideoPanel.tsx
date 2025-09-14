@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Play, Square, Maximize, Camera, VolumeX, Volume2, RotateCcw } from "lucide-react"
 import { storage } from "@/lib/storage"
 import { StatusPill } from "@/components/StatusPill"
+import { convertToProxyUrl, isRobotUrl, getDisplayUrl } from "@/lib/streamUtils"
 
 type VideoStatus = "disconnected" | "connecting" | "live" | "error"
 
@@ -37,10 +38,22 @@ export function VideoPanel({ onStatusChange, onUrlChange }: VideoPanelProps) {
     onUrlChange?.(url)
   }, [url, onUrlChange])
 
+  // Helper function to convert robot URLs to proxy URLs
+  const getProxiedUrl = (originalUrl: string): string => {
+    return convertToProxyUrl(originalUrl)
+  }
+
   // Load saved URL on mount
   useEffect(() => {
     const savedUrl = storage.loadUrl()
-    setUrl(savedUrl)
+    // Convert robot URLs to proxy URLs automatically
+    const proxiedUrl = getProxiedUrl(savedUrl)
+    setUrl(proxiedUrl)
+    
+    // Update storage if URL was converted
+    if (proxiedUrl !== savedUrl) {
+      storage.saveUrl(proxiedUrl)
+    }
   }, [])
 
   // Mock latency updates
@@ -66,9 +79,17 @@ export function VideoPanel({ onStatusChange, onUrlChange }: VideoPanelProps) {
   const connect = async () => {
     if (!url.trim()) return
 
+    // Convert direct robot URLs to proxied URLs to avoid CORS
+    let finalUrl = getProxiedUrl(url)
+    
+    // Update URL state and storage if it was converted
+    if (finalUrl !== url) {
+      setUrl(finalUrl)
+      storage.saveUrl(finalUrl)
+    }
+
     setStatus("connecting")
     setErrorMessage("")
-    storage.saveUrl(url)
 
     try {
       const video = videoRef.current
@@ -76,12 +97,21 @@ export function VideoPanel({ onStatusChange, onUrlChange }: VideoPanelProps) {
 
       // Check if browser supports native HLS (Safari)
       if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = url
-        video.addEventListener("loadedmetadata", () => setStatus("live"))
-        video.addEventListener("error", () => {
+        video.src = finalUrl
+        
+        const handleLoadedMetadata = () => {
+          setStatus("live")
+          video.removeEventListener("loadedmetadata", handleLoadedMetadata)
+        }
+        
+        const handleError = () => {
           setStatus("error")
           setErrorMessage("Failed to load stream. Please check the URL.")
-        })
+          video.removeEventListener("error", handleError)
+        }
+        
+        video.addEventListener("loadedmetadata", handleLoadedMetadata)
+        video.addEventListener("error", handleError)
       } else {
         // Use hls.js for other browsers
         const { default: Hls } = await import("hls.js")
@@ -97,7 +127,7 @@ export function VideoPanel({ onStatusChange, onUrlChange }: VideoPanelProps) {
           })
 
           hlsRef.current = hls
-          hls.loadSource(url)
+          hls.loadSource(finalUrl)
           hls.attachMedia(video)
 
           hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -198,12 +228,17 @@ export function VideoPanel({ onStatusChange, onUrlChange }: VideoPanelProps) {
         <div className="flex flex-col sm:flex-row gap-2">
           <div className="flex-1">
             <Input
-              placeholder="Enter HLS stream URL..."
+              placeholder="Enter robot URL or HLS stream URL (auto-proxied for CORS)"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               disabled={status === "connecting"}
               onKeyDown={(e) => e.key === "Enter" && connect()}
             />
+            {isRobotUrl(url) && (
+              <p className="text-xs text-blue-400 mt-1">
+                🔒 Using proxy to avoid CORS: {getDisplayUrl(url)}
+              </p>
+            )}
           </div>
 
           <div className="flex gap-2">
@@ -277,9 +312,9 @@ export function VideoPanel({ onStatusChange, onUrlChange }: VideoPanelProps) {
               </div>
               <h3 className="text-lg font-medium text-white mb-2">No Stream Connected</h3>
               <p className="text-gray-400 mb-4 max-w-md">
-                Enter an HLS stream URL above and click Connect to start viewing Aura-67's camera feed.
+                Enter a robot stream URL (http://100.112.177.9:8000/...) or HLS URL above. Robot URLs are automatically proxied to avoid CORS issues.
               </p>
-              <p className="text-sm text-gray-500">Demo stream is pre-loaded for testing</p>
+              <p className="text-sm text-gray-500">Default robot camera stream pre-loaded</p>
             </div>
           )}
 

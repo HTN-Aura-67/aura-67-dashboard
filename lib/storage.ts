@@ -28,9 +28,9 @@ export const storage = {
 
   loadUrl: (): string => {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("aura-67-stream-url") || "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+      return localStorage.getItem("aura-67-stream-url") || "/api/stream/stream.m3u8"
     }
-    return "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+    return "/api/stream/stream.m3u8"
   },
 
   clearChat: () => {
