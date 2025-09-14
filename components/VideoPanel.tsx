@@ -10,6 +10,7 @@ import { Play, Square, Maximize, Camera, VolumeX, Volume2, RotateCcw } from "luc
 import { storage } from "@/lib/storage"
 import { StatusPill } from "@/components/StatusPill"
 import { convertToProxyUrl, isRobotUrl, getDisplayUrl } from "@/lib/streamUtils"
+import LiveVideo from "@/components/LiveVideo"
 
 type VideoStatus = "disconnected" | "connecting" | "live" | "error"
 
@@ -427,7 +428,7 @@ export function VideoPanel({ onStatusChange, onUrlChange }: VideoPanelProps) {
               </Button>
             </div>
           )}
-
+          
           <video
             ref={videoRef}
             className="w-full h-full object-contain"
@@ -443,6 +444,8 @@ export function VideoPanel({ onStatusChange, onUrlChange }: VideoPanelProps) {
               maxHeight: '100%'
             }}
           />
+
+          <LiveVideo />
         </div>
       </CardContent>
     </Card>

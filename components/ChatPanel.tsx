@@ -8,11 +8,12 @@ import { MessageList } from "@/components/MessageList"
 import { Composer } from "@/components/Composer"
 import { QuickCommands } from "@/components/QuickCommands"
 import { storage, type ChatMessage } from "@/lib/storage"
-import { mockBotReply, getRandomDelay } from "@/lib/mockBot"
+import { useChatApi } from "@/components/useChatApi"
 
 export function ChatPanel() {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
+  const { send: sendToApi } = useChatApi()
 
   // Load saved messages on mount
   useEffect(() => {
@@ -53,10 +54,15 @@ export function ChatPanel() {
     setMessages((prev) => [...prev, userMessage])
     setIsTyping(true)
 
-    // Simulate bot thinking and reply
-    const delay = getRandomDelay()
-    setTimeout(() => {
-      const botReply = mockBotReply(text)
+    try {
+      // Call the real API
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: [{ role: "user", content: text.trim() }] })
+      })
+
+      const botReply = await response.text()
       const botMessage: ChatMessage = {
         id: `robot-${Date.now()}`,
         role: "robot",
@@ -65,8 +71,17 @@ export function ChatPanel() {
       }
 
       setMessages((prev) => [...prev, botMessage])
+    } catch (error) {
+      const errorMessage: ChatMessage = {
+        id: `robot-${Date.now()}`,
+        role: "robot",
+        text: "Sorry, I encountered an error. Please check the connection and try again.",
+        timestamp: Date.now(),
+      }
+      setMessages((prev) => [...prev, errorMessage])
+    } finally {
       setIsTyping(false)
-    }, delay)
+    }
   }
 
   const clearChat = () => {

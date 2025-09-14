@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import type { ChatMessage } from "@/lib/storage"
 import { TypingIndicator } from "@/components/TypingIndicator"
@@ -12,12 +11,21 @@ interface MessageListProps {
 }
 
 export function MessageList({ messages, isTyping }: MessageListProps) {
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    const scrollToBottom = () => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
+    
+    // Use multiple attempts to ensure scrolling works
+    const timeout1 = setTimeout(scrollToBottom, 100)
+    const timeout2 = setTimeout(scrollToBottom, 300)
+    
+    return () => {
+      clearTimeout(timeout1)
+      clearTimeout(timeout2)
     }
   }, [messages, isTyping])
 
@@ -29,8 +37,8 @@ export function MessageList({ messages, isTyping }: MessageListProps) {
   }
 
   return (
-    <ScrollArea className="h-full">
-      <div ref={scrollRef} className="p-4 space-y-4">
+    <div className="h-full overflow-y-auto">
+      <div className="p-4 space-y-4">
         {messages.map((message) => (
           <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
             <div
@@ -79,7 +87,10 @@ export function MessageList({ messages, isTyping }: MessageListProps) {
             </div>
           </div>
         )}
+        
+        {/* Invisible element to scroll to */}
+        <div ref={messagesEndRef} />
       </div>
-    </ScrollArea>
+    </div>
   )
 }

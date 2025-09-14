@@ -12,9 +12,38 @@ interface ManualControlProps {
 export function ManualControl({ onCommand }: ManualControlProps) {
   const [isPressed, setIsPressed] = useState<string | null>(null)
 
-  const handleKeyPress = (direction: string) => {
+  const handleKeyPress = async (direction: string) => {
     setIsPressed(direction)
     onCommand(direction)
+    
+    // Map direction to WASD format for API
+    let apiDirection: "w" | "a" | "s" | "d" | null = null
+    switch (direction) {
+      case "forward":
+        apiDirection = "w"
+        break
+      case "backward":
+        apiDirection = "s"
+        break
+      case "left":
+        apiDirection = "a"
+        break
+      case "right":
+        apiDirection = "d"
+        break
+    }
+    
+    if (apiDirection) {
+      try {
+        await fetch("/api/manual", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ direction: apiDirection, speed: 1 })
+        })
+      } catch (error) {
+        console.error("Manual control error:", error)
+      }
+    }
   }
 
   const handleKeyRelease = () => {
