@@ -16,7 +16,11 @@ export async function GET(
       method: 'GET',
       headers: {
         'User-Agent': 'Aura-67-Dashboard/1.0',
+        'Connection': 'keep-alive',
+        'Cache-Control': 'no-cache',
       },
+      // Disable any built-in timeouts for streaming
+      signal: undefined,
     })
 
     if (!response.ok) {
@@ -51,8 +55,13 @@ export async function GET(
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type',
-        'Cache-Control': contentType.includes('mpegurl') ? 'no-cache' : 'public, max-age=3600',
+        'Cache-Control': contentType.includes('mpegurl') ? 'no-cache, no-store, must-revalidate' : 'public, max-age=1',
         'Cross-Origin-Resource-Policy': 'cross-origin',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+        // Additional headers for streaming optimization
+        'Connection': 'keep-alive',
+        'Transfer-Encoding': 'chunked',
       },
     })
   } catch (error) {

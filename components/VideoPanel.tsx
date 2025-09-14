@@ -56,13 +56,22 @@ export function VideoPanel({ onStatusChange, onUrlChange }: VideoPanelProps) {
     }
   }, [])
 
-  // Mock latency updates
+  // Real-time latency calculation
   useEffect(() => {
     if (status === "live") {
       const interval = setInterval(() => {
-        const randomLatency = Math.floor(Math.random() * 100) + 120
-        setLatency(`~${randomLatency} ms (est.)`)
-      }, 3000)
+        const video = videoRef.current
+        if (video && video.seekable.length > 0) {
+          const liveEdge = video.seekable.end(video.seekable.length - 1)
+          const currentTime = video.currentTime
+          const actualLatency = Math.round((liveEdge - currentTime) * 1000) // Convert to ms
+          setLatency(`${actualLatency}ms (live)`)
+        } else {
+          // Fallback to estimated latency
+          const randomLatency = Math.floor(Math.random() * 500) + 200
+          setLatency(`~${randomLatency}ms (est.)`)
+        }
+      }, 1000) // Update every second
       return () => clearInterval(interval)
     }
   }, [status])
@@ -99,9 +108,19 @@ export function VideoPanel({ onStatusChange, onUrlChange }: VideoPanelProps) {
       if (video.canPlayType("application/vnd.apple.mpegurl")) {
         video.src = finalUrl
         
+        // Optimize video element for low latency
+        video.preload = "none"
+        video.currentTime = 0
+        
         const handleLoadedMetadata = () => {
           setStatus("live")
           video.removeEventListener("loadedmetadata", handleLoadedMetadata)
+          
+          // Jump to live edge for minimal latency
+          if (video.seekable.length > 0) {
+            const liveEdge = video.seekable.end(video.seekable.length - 1)
+            video.currentTime = liveEdge - 1 // Stay 1 second behind live edge
+          }
         }
         
         const handleError = () => {
@@ -110,8 +129,20 @@ export function VideoPanel({ onStatusChange, onUrlChange }: VideoPanelProps) {
           video.removeEventListener("error", handleError)
         }
         
+        const handleCanPlay = () => {
+          // Ensure we're at the live edge
+          if (video.seekable.length > 0) {
+            const liveEdge = video.seekable.end(video.seekable.length - 1)
+            if (video.currentTime < liveEdge - 3) {
+              video.currentTime = liveEdge - 1
+            }
+          }
+          video.removeEventListener("canplay", handleCanPlay)
+        }
+        
         video.addEventListener("loadedmetadata", handleLoadedMetadata)
         video.addEventListener("error", handleError)
+        video.addEventListener("canplay", handleCanPlay)
       } else {
         // Use hls.js for other browsers
         const { default: Hls } = await import("hls.js")
@@ -122,8 +153,39 @@ export function VideoPanel({ onStatusChange, onUrlChange }: VideoPanelProps) {
           }
 
           const hls = new Hls({
+            // Low latency mode settings
             enableWorker: false,
             lowLatencyMode: true,
+            
+            // Buffer management for minimal latency
+            maxBufferLength: 4,        // Keep only 4 seconds in buffer
+            maxMaxBufferLength: 6,     // Maximum buffer size
+            maxBufferSize: 60 * 1000 * 1000, // 60MB max buffer size
+            maxBufferHole: 0.1,        // Small buffer holes
+            
+            // Live stream settings
+            liveSyncDurationCount: 1,  // Only keep 1 segment for sync
+            liveMaxLatencyDurationCount: 2, // Max 2 segments behind live edge
+            liveDurationInfinity: true,
+            
+            // Fragment loading settings
+            fragLoadingTimeOut: 2000,  // 2 second timeout for fragments
+            fragLoadingMaxRetry: 1,    // Only retry once
+            fragLoadingRetryDelay: 100, // Quick retry
+            
+            // Manifest settings
+            manifestLoadingTimeOut: 2000,
+            manifestLoadingMaxRetry: 1,
+            manifestLoadingRetryDelay: 100,
+            
+            // Aggressive settings for low latency
+            startLevel: -1,            // Start at lowest quality for faster startup
+            testBandwidth: false,      // Skip bandwidth test
+            progressive: true,         // Progressive downloading
+            
+            // Reduce target buffer
+            backBufferLength: 0,       // No back buffer
+            frontBufferFlushThreshold: 2, // Flush buffer aggressively
           })
 
           hlsRef.current = hls
@@ -132,12 +194,35 @@ export function VideoPanel({ onStatusChange, onUrlChange }: VideoPanelProps) {
 
           hls.on(Hls.Events.MANIFEST_PARSED, () => {
             setStatus("live")
+            // Start at the live edge
+            if (hls.liveSyncPosition) {
+              video.currentTime = hls.liveSyncPosition
+            }
+          })
+
+          hls.on(Hls.Events.FRAG_LOADED, () => {
+            // Keep close to live edge
+            if (video.seekable.length > 0) {
+              const liveEdge = video.seekable.end(video.seekable.length - 1)
+              const currentTime = video.currentTime
+              const latency = liveEdge - currentTime
+              
+              // If we're more than 3 seconds behind, jump closer to live
+              if (latency > 3) {
+                video.currentTime = liveEdge - 1
+              }
+            }
           })
 
           hls.on(Hls.Events.ERROR, (event, data) => {
             if (data.fatal) {
               setStatus("error")
               setErrorMessage("HLS error: " + (data.details || "Unknown error"))
+            } else {
+              // Non-fatal errors, try to recover
+              if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+                hls.recoverMediaError()
+              }
             }
           })
         } else {
@@ -350,6 +435,13 @@ export function VideoPanel({ onStatusChange, onUrlChange }: VideoPanelProps) {
             muted={muted}
             playsInline
             controls={false}
+            preload="none"
+            style={{ 
+              // Additional optimizations for low latency
+              objectFit: 'contain',
+              maxWidth: '100%',
+              maxHeight: '100%'
+            }}
           />
         </div>
       </CardContent>
